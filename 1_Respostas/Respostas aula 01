@@ -1,14 +1,24 @@
 1. O que são sistemas embarcados?
+Sistemas embarcados são sistemas microprocessados no qual o computador é completamente encapsulado ou dedicado ao dispositivo que controla.
+São sistemas completos e independentes que são carregados de executar funções determinadas na qual realiza um conjunto de tarefas
+pré-definidas com algum requesito específico. É uma única tarefa que intarage continuamente com o meio ambiente dedicado ao dispositivo.
 
 2. O que são sistemas microprocessados?
+São sistemas que fazem operações lógicas, processamento de dados e de controle na qual precisa receber ordens de outros componentes externos 
+para funcionar.
 
 3. Apresente aplicações de sistemas embarcados:
-  (a) Para a indústria automotiva
+  (a) Para a indústria automotiva: Computador de Bordo
   
-  (b) Para eletrodomésticos
+  (b) Para eletrodomésticos: Impressora, geladeira
   
-  (c) Para automação industrial
+  (c) Para automação industrial: Robôs
   
-4. Cite arquiteturas possíveis e as diferenças entre elas
+4. Cite arquiteturas possíveis e as diferenças entre elas.
+Harvard e Von Neumann. A diferença entre elas é que a arquitetura Harvard separa o armazenamento e o comportamento das instruções do CPU e 
+os dados, enquanto a anterior utiliza o mesmo espaço para ambos. Nos CPUs atuais, é mais comum encontrar a arquitetura Von Neumann.
 
 5. Porque usamos MSP430 na disciplina, ao invés de outro microcontrolador
+Possui maior capacidade de desenvolver projetos mais complexos com uma maior facilidade diferente de outros microcontroladores por exemplo:
+o arduino que é bom para o aprendizado entretanto para projetos mais complexos seu entendimento fica mais dificil e menos inviável para 
+projetar.

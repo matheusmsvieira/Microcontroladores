@@ -1,0 +1,24 @@
+1.Quais as diferenças entre os barramentos de dados e de endereços?
+	O barramentos de dados é um canal de transmissão que transporta dados e informações importantes entre o microprocessador e a memória no interior de um computador.
+Já o barramento de endereços é uma via de transmissão usada pelo microprocessador para acessar os endereços de um memória na qual desejar acessar.
+
+2.Quais são as diferenças entre as memórias RAM e ROM?
+	A memória RAM (Random Access Memory) é uma memória de leitura e escrita, o conteúdo pode ser lido e alterado durante seu uso no circuito. É uma memória volátil, ou seja, os dados armazenados serão perdidos quando o fornecimento de energia for interrompido.
+A memória ROM (Read-only memory) é uma memória somente para leitura. O conteúdo pode ser lido durante o uso no circutio e a gravação é feita fora da operação normal do circuito.
+
+3. 
+(a) A variável i será armazenada na memória RAM, pois estamos escrevemos o valor da variável na memória.
+(b) O programa será armazenado na memória ROM, pois o computador precisará apenas ler  o programa.
+
+4. Quais são as diferenças, vantagens e desvantagens das arquiteturas Harvard e Von Neumann?
+	A diferença entre a arquitetura Von Neunmann e a Harvard é que a última separa o armazenamento e o comportamento das instruções do CPU e os dados, enquanto a anterior utiliza o mesmo espaço de memória para ambos. A arquitetura  de Von Neumann é mais simples porém é mais lento pois não permite acesso simultâneo às memórias e é geralmente CISC. Já a arquitetura Harvard é mais complexa no entanto é mais rápido pois permite o acesso simultâneo às memórias, pipelining.
+
+5. Considere a variável inteira i, armazenando o valor 0x8051ABCD. Se i é armazenada na memória a partir do endereço 0x0200, como ficam este byte e os seguintes, considerando que a memória é: (a) Little-endian; (b) Big-endian.
+(a) 					(b)
+0x0200 - CD				0x0200 - 80
+0x0202 - AB				0x0202 - 51
+0x0204 - 51				0x0204 - AB
+0x0206 - 80				0x0206 - CD
+
+6. Sabendo que o processador do MSP430 tem registradores de 16 bits, como ele soma duas variáveis de 32 bits?
+	O processador deve utilizar uma memória auxiliar e fazer a operação em paralelo para que possa ocorrer a soma das duas variaveis de 32 bits.

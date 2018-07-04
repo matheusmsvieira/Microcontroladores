@@ -1,0 +1,144 @@
+1. Escreva um código em C que pisca os LEDs ininterruptamente.
+#include <msp430.h> 
+#define LED1 BIT0
+#define LED2 BIT6
+#define LEDS (LED1|LED2)
+#define BTN BIT3
+
+void atraso(volatile unsigned int i)
+{
+    while ((i--)>0);
+}
+
+int main(void) {
+    WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
+	P1OUT |= LEDS;
+	P1DIR |= LEDS;
+	while(1)
+	{
+	    atraso(0xffff);
+	    P1OUT ^= LEDS;
+	}
+	return 0;
+}
+
+2. Escreva um código em C que pisca os LEDs ininterruptamente. No ciclo que pisca os LEDs, o tempo que os LEDs ficam ligados deve ser
+duas vezes maior do que o tempo que eles ficam desligados.
+
+3. Escreva um código em C que acende os LEDs quando o botão é pressionado.
+#include <msp430.h> 
+
+int main(void) {
+    WDTCTL = WDTPW | WDTHOLD;                                    // Desligar WatchDog Timer
+        P1OUT = 0x00;
+        P1DIR |= 0xFF;                                           //Sempre devemos colocar os pinos não utilizados em modo de saída
+        P1DIR &= ~BIT3;                                          //depois apagamos os pinos que serão utilizados como entrada
+        P1REN |= BIT3;                                           //Ligar o resistor conectado ao pino 3.
+        P1OUT |= BIT3;                                           // O Registrador PxOUT pode ser mudado independente da direção de PxDIR
+
+
+        for(;;){
+            if((P1IN & BIT3) == 0)
+                 P1OUT ^= BIT0;
+        }
+	return 0;
+}
+
+
+4. Escreva um código em C que pisca os LEDs ininterruptamente somente se o botão for pressionado.
+#include <msp430.h> 
+#define LED1 BIT0
+#define LED2 BIT6
+#define LEDS (LED1|LED2)
+#define BTN BIT3
+
+
+int main(void) {
+    WDTCTL = WDTPW | WDTHOLD;   // Stop watchdog timer
+    P1OUT |= LEDS;
+    P1DIR |= LEDS;
+    P1DIR &= ~BTN;
+    P1REN |= BTN;
+    P1OUT |= BTN;
+    while(1)
+    {
+       if((P1IN&BTN)==0)
+           P1OUT |= LEDS;
+       else
+           P1OUT &= ~LEDS;
+
+    }
+    return 0;
+}
+
+5. Escreva um código em C que acende os LEDs quando o botão é pressionado. Deixe o MSP430 em modo de baixo consumo, e habilite a 
+interrupção do botão.
+#include "msp430.h";
+
+#define BUTTON BIT3
+
+unsigned char Mode = 0;
+
+/* Function Prototype */
+void InitializeButton(void);
+
+/* Main function */
+void main(void)
+{
+ WDTCTL = WDTPW + WDTHOLD;          // Stop WDT
+
+ P1DIR |= (BIT0+BIT6);              // P1.2 to output
+ P1OUT |= (BIT0+BIT6);              // Set the LEDs P1.0 and P1.6 to on
+
+ InitializeButton();
+
+ _BIS_SR(LPM0_bits+GIE);        // Enter LPM0 with interrupts enabled
+}
+
+/* This function configures the button so it will trigger interrupts
+ * when pressed.  Those interrupts will be handled by PORT1_ISR() */
+void InitializeButton(void)
+{
+    P1DIR &= ~BUTTON;   // Set button pin as an input pin
+    P1OUT |= BUTTON;    // Set pull up resistor on for button
+    P1REN |= BUTTON;    // Enable pull up resistor for button to keep pin high until pressed
+    P1IES |= BUTTON;    // Enable Interrupt to trigger on the falling edge (high (unpressed) to low (pressed) transition)
+    P1IFG &= ~BUTTON;   // Clear the interrupt flag for the button
+    P1IE |= BUTTON;     // Enable interrupts on port 1 for the button
+}
+
+/* Port 1 interrupt to service the button press */
+#pragma vector=PORT1_VECTOR
+__interrupt void PORT1_ISR(void)
+{
+  P1IFG &= ~BUTTON;                 // Clear the interrupt flag for the button
+  P1IE &= ~BUTTON;                  // Disable Button interrupt
+  WDTCTL = WDT_MDLY_32;             // Start and set watchdog timer (WDT) to trigger every 32ms
+  IFG1 &= ~WDTIFG;                  // Clear the interrupt flag for the WDT
+  IE1 |= WDTIE;                 // enable WDT interrupt
+
+  if (Mode == 0)
+  {
+    P1OUT |= (BIT0);                // Set the LED P1.0 to on
+    P1OUT &= ~(BIT6);               // Set the LED P1.6 to off
+    Mode  = 1;
+    P1IES &= ~BIT3;                 // Clear edge detect to rising edge
+  }
+  else
+  {
+        P1OUT |= (BIT6);            // Set the LED P1.6 to on
+        P1OUT &= ~(BIT0);           // Set the LED P1.0 to off
+        Mode  = 0;
+        P1IES |= BUTTON;            // Set edge detect to rising edge
+  }
+}
+
+// WDT Interrupt Service Routine used to de-bounce button press
+#pragma vector=WDT_VECTOR
+__interrupt void WDT_ISR(void)
+{
+    IE1 &= ~WDTIE;                   // disable Watchdog timer (WDT) interrupt
+    IFG1 &= ~WDTIFG;                 // clear WDT interrupt flag
+    WDTCTL = WDTPW + WDTHOLD;        // put WDT back in hold state
+    P1IE |= BUTTON;                  // Reenable interrupts for the button
+}
